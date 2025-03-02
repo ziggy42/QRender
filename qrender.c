@@ -122,7 +122,7 @@ unsigned char gfDiv(unsigned char a, unsigned char b) {
 // Reed-Solomon implementation ------------------------------------------------
 unsigned char *createErrorCorrectionCodewords(
     const unsigned char *dataCodewords, size_t numDataCodewords,
-    size_t numEcCodewords) {
+    unsigned int numEcCodewords) {
   if (numEcCodewords == 0 || numDataCodewords == 0 || dataCodewords == NULL) {
     return NULL;
   }
@@ -224,19 +224,19 @@ unsigned char *encodeString(const unsigned char *str, size_t codewordsSize) {
   return bitStream;
 }
 
-bool isHorizontalTimingPattern(int sideLength, int row, int column) {
+bool isHorizontalTimingPattern(unsigned int sideLength, int row, int column) {
   return row == FINDER_PATTERN_SIZE_LENGTH - 1 &&
          column >= FINDER_PATTERN_SIZE_LENGTH + 1 &&
          column <= sideLength - FINDER_PATTERN_SIZE_LENGTH - 2;
 }
 
-bool isVerticalTimingPattern(int sideLength, int row, int column) {
+bool isVerticalTimingPattern(unsigned int sideLength, int row, int column) {
   return column == FINDER_PATTERN_SIZE_LENGTH - 1 &&
          row >= FINDER_PATTERN_SIZE_LENGTH + 1 &&
          row <= sideLength - FINDER_PATTERN_SIZE_LENGTH - 2;
 }
 
-bool isEncodingRegion(int sideLength, int row, int col) {
+bool isEncodingRegion(unsigned int sideLength, int row, int col) {
   if (row < 0 || row >= sideLength || col < 0 || col >= sideLength) {
     return false;
   }
@@ -267,7 +267,8 @@ bool isEncodingRegion(int sideLength, int row, int col) {
   return true;
 }
 
-void writeEncodedString(int sideLength, const unsigned char *encodedStr,
+void writeEncodedString(unsigned int sideLength,
+                        const unsigned char *encodedStr,
                         size_t encodedStrLength) {
   /**
    * NOTE: this implementation takes some shortcuts under the assumption we are
@@ -309,7 +310,7 @@ void writeEncodedString(int sideLength, const unsigned char *encodedStr,
   }
 }
 
-void writeFormatInformation(int sideLength) {
+void writeFormatInformation(unsigned int sideLength) {
   // Placement 1.
   int bitIndex = 0;
   for (unsigned int i = 0; i <= 5; i++) {
@@ -346,7 +347,7 @@ void writeFormatInformation(int sideLength) {
 
 void writeDarkModule(short version) { qrcode[4 * version + 9][8] = 1; }
 
-void render(int sideLength, int quiteZoneSize) {
+void render(unsigned int sideLength, unsigned int quiteZoneSize) {
   int withQuiteZoneSize = sideLength + 2 * quiteZoneSize;
   for (unsigned int i = 0; i < withQuiteZoneSize; i++) {
     for (unsigned int j = 0; j < withQuiteZoneSize; j++) {
@@ -363,7 +364,7 @@ void render(int sideLength, int quiteZoneSize) {
   }
 }
 
-void applyMaskPattern(int sideLength) {
+void applyMaskPattern(unsigned int sideLength) {
   for (unsigned int row = 0; row < sideLength; row++) {
     for (unsigned int col = 0; col < sideLength; col++) {
       if (!isEncodingRegion(sideLength, row, col)) {
@@ -377,7 +378,8 @@ void applyMaskPattern(int sideLength) {
   }
 }
 
-void writeHorizontalTimingPattern(int row, int startColumn, int endColumn) {
+void writeHorizontalTimingPattern(unsigned int row, unsigned int startColumn,
+                                  unsigned int endColumn) {
   bool isBlack = true;
   for (unsigned int i = startColumn; i <= endColumn; i++) {
     qrcode[row][i] = isBlack;
@@ -385,7 +387,8 @@ void writeHorizontalTimingPattern(int row, int startColumn, int endColumn) {
   }
 }
 
-void writeVerticalTimingPattern(int column, int startRow, int endRow) {
+void writeVerticalTimingPattern(unsigned int column, unsigned int startRow,
+                                unsigned int endRow) {
   bool isBlack = true;
   for (unsigned int i = startRow; i <= endRow; i++) {
     qrcode[i][column] = isBlack;
@@ -393,7 +396,7 @@ void writeVerticalTimingPattern(int column, int startRow, int endRow) {
   }
 }
 
-void writeFinderPattern(int startRow, int startColumn) {
+void writeFinderPattern(unsigned int startRow, unsigned int startColumn) {
   for (unsigned int i = 0; i < FINDER_PATTERN_SIZE_LENGTH; i++) {
     for (unsigned int j = 0; j < FINDER_PATTERN_SIZE_LENGTH; j++) {
       qrcode[startRow + i][startColumn + j] = finderPattern[i][j];
@@ -401,7 +404,7 @@ void writeFinderPattern(int startRow, int startColumn) {
   }
 }
 
-void writeFinderPatterns(int sideLength) {
+void writeFinderPatterns(unsigned int sideLength) {
   writeFinderPattern(0, 0);
   writeFinderPattern(0, sideLength - FINDER_PATTERN_SIZE_LENGTH);
   writeFinderPattern(sideLength - FINDER_PATTERN_SIZE_LENGTH, 0);
