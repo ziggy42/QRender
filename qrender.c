@@ -207,7 +207,8 @@ unsigned char *encodeString(const unsigned char *str, size_t codewordsSize) {
   // Note that the memory is 0-ed already, so e.g. the terminator pattern does
   // not need to be applied manually.
   unsigned int bitStreamIndex = 1;
-  for (unsigned int i = 0; i < strLength && bitStreamIndex < codewordsSize; i++) {
+  for (unsigned int i = 0; i < strLength && bitStreamIndex < codewordsSize;
+       i++) {
     unsigned char ch = str[i];
     bitStream[bitStreamIndex] |= ch >> 4;
     bitStream[++bitStreamIndex] = ch << 4;
@@ -336,7 +337,8 @@ void writeFormatInformation(int sideLength) {
         (MASKED_FORMAT_INFORMATION & (1 << bitIndex++)) != 0;
   }
 
-  for (unsigned int i = sideLength - FINDER_PATTERN_SIZE_LENGTH; i < sideLength; i++) {
+  for (unsigned int i = sideLength - FINDER_PATTERN_SIZE_LENGTH; i < sideLength;
+       i++) {
     qrcode[i][FINDER_PATTERN_SIZE_LENGTH + 1] =
         (MASKED_FORMAT_INFORMATION & (1 << bitIndex++)) != 0;
   }
