@@ -189,11 +189,11 @@ unsigned char *createErrorCorrectionCodewords(
  * - Padding (if necessary)
  */
 unsigned char *encodeString(const unsigned char *str, size_t codewordsSize) {
-  size_t strLength = strlen(str);
+  size_t strLength = strlen((const char *)str);
   // 4 bits for the encoding mode, 8 bits for the string length -> 2 bytes out
   // of the available codewordsSize are not usable.
   if (strLength > codewordsSize - 2) {
-    fprintf(stderr, "Input string too long: %d\n", strLength);
+    fprintf(stderr, "Input string too long: %zu\n", strLength);
     return NULL;
   }
   unsigned char strLengthByte = (unsigned char)strLength;
@@ -431,7 +431,8 @@ int main(int argc, char *argv[]) {
   // larger. Therefore, they are skipped here for now.
 
   size_t codewordsSize = 19;
-  unsigned char *encodedString = encodeString(argv[1], codewordsSize);
+  const unsigned char *input = (const unsigned char *)argv[1];
+  unsigned char *encodedString = encodeString(input, codewordsSize);
   if (encodedString == NULL) {
     return 1;
   }
